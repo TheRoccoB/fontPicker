@@ -26,10 +26,26 @@ module.exports = function(grunt) {
         getFonts: {
             foo: {
                 outputCss: 'css/font.css',
+                outputDropdown:'tmp/dropdown.html',
                 fonts: [
-                    'Open Sans',
-                    'Roboto Condensed',
-                    'Source Sans Pro'
+                    'Droid Serif',
+                    'Bitter',
+                    'Oswald',
+                    'Francois One',
+                    'Indie Flower',
+                    'Dancing Script',
+                    'Special Elite',
+                    'Audiowide',
+                    'Chewy',
+                    'Ubuntu Mono',
+                    'Righteous',
+                    'Bevan',
+                    'Orbitron',
+                    'Rochester',
+                    'Racing Sans One',
+                    'Homenaje',
+                    'Lato',
+                    'Open Sans'
                 ]
             }
 
@@ -85,12 +101,33 @@ module.exports = function(grunt) {
                     return match[1];
                 }
                 else{
-                    console.log('something went horribly wrong');
+                    console.log('unable to find woff url in stylesheet\nStylesheet contents:\n', rawCSS);
+                    return '';
                 }
             });
         };
 
-        var urlNames = this.data.fonts.map(function(item){
+        var generateDropdown = function(fontList){
+            var fontHTML = fontList.map(function(fontData){
+                return '        <li style="font-family:' + "'" + fontData.name + "'" + '"><a href="#" data-font-url="' + fontData.url + '">' + fontData.name + '</a></li>'
+            }).join('\n');
+
+            return '<div class="dropdown">\n' +
+            '    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Select Font <span class="caret"></span></button>\n' +
+            '    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">\n' +
+                    fontHTML + '\n' +
+            '    </ul>\n' +
+            '</div>\n';
+        }
+
+
+        var fontNames = this.data.fonts;
+
+        grunt.file.write(this.data.outputDropdown, generateDropdown(fontNames.map(function(fontName){
+            return {name:fontName, url:'https://fonts.googleapis.com/css?family=' + encodeURIComponent(fontName)}
+        })));
+
+        var urlNames = fontNames.map(function(item){
             var encoded = encodeURIComponent(item);
             return 'https://fonts.googleapis.com/css?family=' + encoded + '&text=' + encoded;
         });
@@ -124,7 +161,7 @@ module.exports = function(grunt) {
                        for (var i=0; i<rawCSSArray.length; i++){
                            var rawCSS = rawCSSArray[i];
                            var b64WoffData = b64WoffDataArray[i];
-                           outputFileContents += rawCSS.replace(/url\(.*?\)/, 'url(data:application/font-woff,' +  b64WoffData + ')');
+                           outputFileContents += rawCSS.replace(/url\(.*?\)/, 'url(data:application/font-woff;charset=utf-8;base64,' +  b64WoffData + ')');
                        }
 
                        grunt.file.write(outputCssFilename, outputFileContents);
