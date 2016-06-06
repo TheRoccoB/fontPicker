@@ -1,7 +1,15 @@
-$(function() {
-    $(".gwfd-font-dropdown li a").click(function(){
-        var selText = $(this).html();
-        $(this).closest('div').find('button[data-toggle="dropdown"]').html(selText + '  <span class="pull-right"><span class="caret"></span></span>');
-
+$(function(){
+    var dropdown = GoogleWebfontDropdown.create({
+        initialFont:'Francois One',
+        onSelected:function(fontName, quotedFontFamily, fontCSS){
+            WebFont.load({
+                google: {
+                    families: [fontName]
+                },
+                active:function(){
+                    $('.new-font').css('font-family', quotedFontFamily);
+                }
+            });
+        }
     });
 });

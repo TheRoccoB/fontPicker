@@ -60,8 +60,20 @@ grunt.registerMultiTask('getFonts', '', function() {
     }
 
 
+    var CSS_TEMPLATE = "\n" +
+        ".gwfd-font-dropdown .btn{\n" +
+        "    width:200px;\n" +
+        "    text-align: left;\n" +
+        "    padding: 3px 8px 3px 20px;\n" +
+        "}\n" +
+        "\n" +
+        ".gwfd-font-dropdown .dropdown-menu{\n" +
+        "    width:200px;\n" +
+        "}\n\n";
+
+
     var fontNames = this.data.fonts;
-    var outputCssBanner = this.data.outputCssBanner || '';
+    var outputCssBanner = (this.data.outputCssBanner || '') + CSS_TEMPLATE;
     var outputDropdownBanner = this.data.outputDropdownBanner || '';
     var outputDropdownFooter = this.data.outputDropdownFooter || '';
 

@@ -12,7 +12,11 @@ module.exports = function(grunt) {
             <link rel="stylesheet" href="../css/main.css" />
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.24/webfontloader.js"></script>
+
+            <script src="../js/fontDropdown.js"></script>
             <script src="../js/main.js"></script>
+
         </head>
         <body>` + "\n\n";
     var FOOTER = `
