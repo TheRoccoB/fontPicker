@@ -2,6 +2,7 @@ var grunt = require('grunt');
 var fs = require('fs');
 var request = require('request');
 var async = require('async');
+var Handlebars = require('handlebars');
 
 
 grunt.registerMultiTask('getFonts', '', function() {
@@ -46,42 +47,14 @@ grunt.registerMultiTask('getFonts', '', function() {
         });
     };
 
-    var generateDropdown = function(fontList){
-        var fontHTML = fontList.map(function(fontData){
-            return '        <li><a href="javascript:void(0);" data-font-url="' + fontData.url + '"><span style="font-family:' + "'" + fontData.name + "'" + '">'  + fontData.name + '</span></a></li>'
-        }).join('\n');
-
-        return '<div class="dropdown gwfd-font-dropdown">\n' +
-            '    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Select Font <span class="pull-right"><span class="caret"></span></span></button>\n' +
-            '    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">\n' +
-            fontHTML + '\n' +
-            '    </ul>\n' +
-            '</div>\n';
-    }
-
-
-    var CSS_TEMPLATE = "\n" +
-        ".gwfd-font-dropdown .btn{\n" +
-        "    width:200px;\n" +
-        "    text-align: left;\n" +
-        "    padding: 3px 8px 3px 20px;\n" +
-        "}\n" +
-        "\n" +
-        ".gwfd-font-dropdown .dropdown-menu{\n" +
-        "    width:200px;\n" +
-        "}\n\n";
-
-
     var fontNames = this.data.fonts;
+    var CSS_TEMPLATE = fs.readFileSync('templates/defaultStyleTemplate.css').toString();
+    var JS_TEMPLATE = fs.readFileSync('templates/fontDropdownTemplate.js').toString();
+
+    var jsWithDefaultFonts = Handlebars.compile(JS_TEMPLATE)({defaultFonts:"['" + fontNames.join("', '")  + "']"});
     var outputCssBanner = (this.data.outputCssBanner || '') + CSS_TEMPLATE;
-    var outputDropdownBanner = this.data.outputDropdownBanner || '';
-    var outputDropdownFooter = this.data.outputDropdownFooter || '';
 
-    console.log("THIS", this.data);
-
-    grunt.file.write(this.data.outputDropdown, outputDropdownBanner + generateDropdown(fontNames.map(function(fontName){
-        return {name:fontName, url:'https://fonts.googleapis.com/css?family=' + encodeURIComponent(fontName)}
-    })) + '\n' + outputDropdownFooter);
+    grunt.file.write(this.data.outputJs, jsWithDefaultFonts);
 
     var urlNames = fontNames.map(function(item){
         var encoded = encodeURIComponent(item);
@@ -126,8 +99,5 @@ grunt.registerMultiTask('getFonts', '', function() {
             });
         }
     });
-
-    //console.log(urlNames);
-
 });
 
